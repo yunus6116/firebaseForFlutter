@@ -1,6 +1,8 @@
+import 'package:firebasedemo/core/model/student.dart';
 import 'package:firebasedemo/core/services/firebase_service.dart';
 import 'package:flutter/material.dart';
-import '../../core/model/user.dart';
+import '../../../core/model/user.dart';
+import '../../../core/model/student.dart';
 
 class FireHomeView extends StatefulWidget {
   @override
@@ -20,7 +22,27 @@ class _FireHomeViewState extends State<FireHomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: FutureBuilder<List<User>>(
+      body: studentFutureBuilder,
+    );
+  }
+
+  Widget get studentFutureBuilder => FutureBuilder<List<Student>>(
+        future: service.getStudents(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              if (snapshot.hasData) {
+                return _listStudent(snapshot.data);
+              } else {
+                return _notFoundWidget;
+              }
+              break;
+            default:
+              return _waitingWidget;
+          }
+        },
+      );
+  Widget get userFutureBuilder => FutureBuilder<List<User>>(
         future: service.getUsers(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
@@ -35,9 +57,7 @@ class _FireHomeViewState extends State<FireHomeView> {
               return _waitingWidget;
           }
         },
-      ),
-    );
-  }
+      );
 
   Widget _listUser(List<User> list) {
     return ListView.builder(
@@ -46,10 +66,26 @@ class _FireHomeViewState extends State<FireHomeView> {
     );
   }
 
+  Widget _listStudent(List<Student> list) {
+    return ListView.builder(
+      itemCount: list.length,
+      itemBuilder: (context, index) => _studentCard(list[index]),
+    );
+  }
+
   Widget _userCard(User user) {
     return Card(
       child: ListTile(
         title: Text(user.name),
+      ),
+    );
+  }
+
+  Widget _studentCard(Student student) {
+    return Card(
+      child: ListTile(
+        title: Text(student.name),
+        subtitle: Text(student.number.toString()),
       ),
     );
   }

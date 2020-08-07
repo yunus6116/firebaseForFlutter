@@ -1,4 +1,5 @@
-import 'package:firebasedemo/ui/view/fire_home_view.dart';
+import 'package:firebasedemo/ui/view/authentication/login_view.dart';
+import 'package:firebasedemo/ui/view/home/fire_home_view.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -8,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Material App',
-      home: FireHomeView(),
+      home: LoginView(),
     );
   }
 }
