@@ -1,6 +1,7 @@
 import 'package:firebasedemo/core/model/user/user_auth_error.dart';
 import 'package:firebasedemo/core/model/user/user_request.dart';
 import 'package:firebasedemo/core/services/firebase_service.dart';
+import 'package:firebasedemo/core/services/google_signin.dart';
 import 'package:firebasedemo/ui/view/home/fire_home_view.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,12 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.exit_to_app),
+        onPressed: () async {
+          await GoogleSignHelper.instance.signOut();
+        },
+      ),
       key: scaffold,
       body: Padding(
         padding: EdgeInsets.all(8.0),
@@ -31,7 +38,26 @@ class _LoginViewState extends State<LoginView> {
             emptySizedBox(),
             passwordTextField(),
             emptySizedBox(),
-            customLoginFAButton(context),
+            Wrap(
+              spacing: 10,
+              children: <Widget>[
+                FloatingActionButton.extended(
+                  backgroundColor: Colors.green,
+                  label: Text('Google Login'),
+                  icon: Icon(Icons.outlined_flag),
+                  onPressed: () async {
+                    var data = await GoogleSignHelper.instance.signIn();
+                    if (data != null) {
+                      var userData =
+                          await GoogleSignHelper.instance.googleAuthentica();
+                      print(userData.accessToken);
+                      print(userData.idToken);
+                    }
+                  },
+                ),
+                customLoginFAButton(context),
+              ],
+            ),
           ],
         ),
       ),
