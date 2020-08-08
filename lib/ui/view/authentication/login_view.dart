@@ -27,59 +27,73 @@ class _LoginViewState extends State<LoginView> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            TextField(
-              onChanged: (value) {
-                setState(() {
-                  username = value;
-                });
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Username',
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextField(
-              onChanged: (value) {
-                setState(() {
-                  password = value;
-                });
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            FloatingActionButton.extended(
-              onPressed: () async {
-                var result = await service.postUser(UserRequest(
-                  email: username,
-                  returnSecureToken: true,
-                  password: password,
-                ));
-                if (result is FirebaseAuthError) {
-                  var error = result.error.message;
-                  scaffold.currentState.showSnackBar(
-                    SnackBar(
-                      content: Text(error),
-                    ),
-                  );
-                } else {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => FireHomeView()),
-                  );
-                }
-              },
-              label: Text("Login"),
-              icon: Icon(Icons.android),
-            ),
+            usernameTextField(),
+            emptySizedBox(),
+            passwordTextField(),
+            emptySizedBox(),
+            customLoginFAButton(context),
           ],
         ),
+      ),
+    );
+  }
+
+  SizedBox emptySizedBox() {
+    return SizedBox(
+      height: 10,
+    );
+  }
+
+  FloatingActionButton customLoginFAButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () async {
+        var result = await service.postUser(UserRequest(
+          email: username,
+          returnSecureToken: true,
+          password: password,
+        ));
+        if (result is FirebaseAuthError) {
+          var error = result.error.message;
+          scaffold.currentState.showSnackBar(
+            SnackBar(
+              content: Text(error),
+            ),
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => FireHomeView()),
+          );
+        }
+      },
+      label: Text("Login"),
+      icon: Icon(Icons.android),
+    );
+  }
+
+  TextField passwordTextField() {
+    return TextField(
+      onChanged: (value) {
+        setState(() {
+          password = value;
+        });
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Password',
+      ),
+    );
+  }
+
+  TextField usernameTextField() {
+    return TextField(
+      onChanged: (value) {
+        setState(() {
+          username = value;
+        });
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Username',
       ),
     );
   }
