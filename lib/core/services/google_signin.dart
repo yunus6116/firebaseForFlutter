@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 
 class GoogleSignHelper {
   static GoogleSignHelper _instance = GoogleSignHelper._private();
@@ -38,10 +39,8 @@ class GoogleSignHelper {
     return null;
   }
 
-  Future<FirebaseUser> _handleSignIn() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+  Future<FirebaseUser> firebaseSignin() async {
+    final GoogleSignInAuthentication googleAuth = await googleAuthentica();
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
@@ -51,6 +50,8 @@ class GoogleSignHelper {
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
+    var token = await user.getIdToken();
+    print(token.token);
     return user;
   }
 }
