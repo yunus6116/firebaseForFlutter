@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebasedemo/core/helper/shared_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 
@@ -50,8 +51,9 @@ class GoogleSignHelper {
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
-    var token = await user.getIdToken();
-    print(token.token);
+    var tokenResult = await user.getIdToken();
+    await SharedManager.instance
+        .saveString(SharedKeys.TOKEN, tokenResult.token);
     return user;
   }
 }
